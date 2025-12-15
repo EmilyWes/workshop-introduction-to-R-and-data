@@ -18,18 +18,17 @@ format:
 
 ![](https://www.tidyverse.org/images/hex-tidyverse.png "The Tidyverse logo"){fig-align="center"}
 
-## What is the tidyverse?
-
-> The tidyverse is an opinionated collection of R packages **designed for data science**. All packages **share an underlying design** philosophy, grammar, and data structures ([tidyverse.org](https://www.tidyverse.org/)).
-
-
-![](https://elixir-luxembourg.org/assets/events_photos/2021_05_06_R_Tidyverse.png "Logos of common tidyverse packages"){fig-align="center"}
-
-## Packages and functions
+## Packages & Functions
 
 ![](images/collection_package_function.png "Visualization of functions, packages and package collections like the Tidyverse")
 
-## Working with packages and functions
+## Packages & Functions
+
+```{=html}
+<iframe src="https://cran.r-project.org/web/packages/available_packages_by_name.html" width="100%" height="500"></iframe>
+```
+
+## Packages & Functions
 
 1. Installing a package (once):
 
@@ -54,7 +53,11 @@ library(dplyr)
 dplyr::rename(iris, petal_length = Petal.Length)
 ```
 
-# Go to Exercise 0 in `datascience_exercises.Rmd`
+## What is the tidyverse?
+
+> The tidyverse is an opinionated collection of R packages **designed for data science**. All packages **share an underlying design** philosophy, grammar, and data structures ([tidyverse.org](https://www.tidyverse.org/)).
+
+![](https://elixir-luxembourg.org/assets/events_photos/2021_05_06_R_Tidyverse.png "Logos of common tidyverse packages"){fig-align="center"}
 
 ## The Data Science workflow
 
@@ -80,6 +83,8 @@ This means that often the results of one step will be the input for the next
 - `purrr`: functional programming
 :::
 
+# 🐧🐧🐧 {background-color=#FFCD00}
+
 ## Afternoon workflow
 
 ::: {.incremental}
@@ -95,8 +100,6 @@ This means that often the results of one step will be the input for the next
 8. Write the summarized dataframe to a file
 :::
 
-# Side Trip:<br>We're Going To Antarctica...{background-color=#FFCD00}
-
 ## Data: palmerpenguins
 
 - Observations about penguins from the Palmer Archipelago (Antarctica)
@@ -110,6 +113,11 @@ This means that often the results of one step will be the input for the next
 ## Reading data into R
 
 ![](../images/reading_writing.png "Importing files into R, and exporting them into a file again")
+
+## readr: Read Rectangular Text Data
+
+![](images/csv-file.png){width=60%}
+![](images/tsv-file.png){width=60%}
 
 ## readr: Read Rectangular Text Data
 
@@ -246,20 +254,20 @@ Select or drop **columns** in your dataframe.
 
 Basic use:
 ```r
-select(your-dataframe, col1, col2)  # select col1 and col2
+select(your-dataframe, week1, week2)  # select the week1 & week2 columns
 ```
 
 . . .
 
 
 ```r
-select(your-dataframe, -col3)       # select all but col3
+select(your-dataframe, -week3)       # select all columns, except week3
 ```
 . . .
 
 Use special [selecting functions](https://tidyselect.r-lib.org/reference/language.html)
 ```r
-select(your-dataframe, contains("col"))    # select cols containing "col"
+select(your-dataframe, contains("week"))    # select columns containing "week"
 ``` 
 
 . . .
@@ -516,101 +524,47 @@ penguins_subset_5 <- penguins %>%
   
 ```
 
-# Tidy Data {background-color=#FFCD00}
+# Reshaping Data {background-color=#FFCD00}
 
-## Tidy Data
+## Long vs. Wide Data
 
-> Tidy data sets are all alike; but every messy data set is messy in its own way ([Wickham/Grolemund, 2017](https://r4ds.had.co.nz/tidy-data.html))
+![source: <https://tavareshugo.github.io/r-intro-tidyverse-gapminder/>](images/pivot-no-code.png)
 
-. . .
+## Long vs. Wide Data
 
-Tidy Data Principles: principles for structuring tabular data sets:
+:::: {.columns}
 
-1. Each variable must have its own column.
-2. Each observation must have its own row.
-3. Each value must have its own cell.
+::: {.column width="50%"}
+### Wide Data
 
-![](https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png "Visualization of the tidy data principles. Source: R 4 Data Science, https://r4ds.had.co.nz/tidy-data.html")
+**PROS**
 
-## Our df - but extended
+- Useful for summaries and reports  
+- Efficient for simple comparisons across categories  
+- Easier to read at a glance  
 
-```{r}
-#| label: extended-df-morning-sesion
-#| echo: false
+**CONS**
 
-df_ext <- df %>%
-  select(-Old_Age) %>%
-  mutate(mood_wk1 = c(4, 3, 4, 2),
-         mood_wk2 = c(2, 3, 5, 4))
-
-df_ext
-```
-
-. . .
-
-Wide or long?
-
-. . .
-
-**Wide!** Why is this not tidy?
-
-. . .
-
-- Values in column names
-- Multiple observations per row
-
-## Wide vs Long
-
-```{r}
-#| label: pivot-ext-df
-#| echo: false
-
-df_long <- df_ext %>%
-            pivot_longer(cols = starts_with("mood_"),
-                        names_to = "week",
-                        values_to = "mood") %>%
-           mutate(week = as.numeric(gsub("mood_wk", "", week))) %>%
-           arrange(name, week)
-```
-
-::: columns
-::: {.column width="53%"}
-**Wide**
-
-```{r}
-#| label: print-head-df_ext
-#| echo: false
-head(df_ext, 4)
-```
-
-- Values in column names
-- Multiple observations per row: all observations on 1 individual in 1 row
-- Not tidy
-
+- Becomes unwieldy with many variables or time points  
+- Not suitable for many statistical or machine-learning models  
 :::
 
-::: {.column width="47%"}
-:::  {.fragment}
+::: {.column width="50%"}
+### Long Data
 
-**Long**
+**PROS**
 
-```{r}
-#| label: print-head-df_long
-#| echo: false
-head(df_long, 4)
-```
+- Ideal for analysis and visualization  
+- Works well with `tidyverse`-aligned packages  
+- Flexible manipulation with easy grouping & summarization  
 
-- Single observation (weight, mood) in a single row
-- No values in column names
-- Tidy!
+**CONS**
 
-:::
-:::
+- Harder to interpret at a glance  
+- Can be computationally heavy for large datasets  
 :::
 
-. . .
-
-Tidy data is a consistent way of storing data + most R functions work with vectors of values (columns). Tidyverse packages are designed to work with tidy data (`dplyr`, `ggplot2`, etc.)
+::::
 
 ## tidyr: Tidy Messy Data
 
@@ -622,6 +576,7 @@ Do It Yourself:
 . . .
 
 Basic use:
+
 ```r
 pivot_longer(your-dataframe, cols = c(col_to_pivot1, col_to_pivot2, etc),
             names_to = "name_of_measurement",
@@ -634,14 +589,9 @@ Check `?pivot_longer()` and Google! for examples and other function arguments.
 
 . . .
 
-In our example:
+## tidyr: Tidy Messy Data
 
-```r
-pivot_longer(df_ext, 
-             cols = starts_with("mood_"),
-             names_to = "week",
-             values_to = "mood")
-```
+![source: <https://tavareshugo.github.io/r-intro-tidyverse-gapminder/>](images/pivot-with-code.png)
 
 # Go to Exercise 9
 
@@ -661,6 +611,36 @@ penguins_long <- penguins_subset_5 %>%
 ```
 
 # Summarizing and combining data {background-color=#FFCD00}
+
+## Our df from the morning - but extended
+
+```{r}
+#| label: extended-df-morning-sesion
+#| echo: false
+
+df_ext <- df %>%
+  select(-Old_Age) %>%
+  mutate(mood_wk1 = c(4, 3, 4, 2),
+         mood_wk2 = c(2, 3, 5, 4))
+
+df_ext
+```
+
+## Our df from the morning - but extended + pivoted
+
+```{r}
+#| label: pivot-ext-df
+#| echo: false
+
+df_long <- df_ext %>%
+            pivot_longer(cols = starts_with("mood_"),
+                        names_to = "week",
+                        values_to = "mood") %>%
+           mutate(week = as.numeric(gsub("mood_wk", "", week))) %>%
+           arrange(name, week)
+
+df_long
+```
 
 ## group_by() and summarize()
 
@@ -702,28 +682,8 @@ df_long %>%
 
 ## Combining data (joins)
 
-Read more about joins in [R for Data Science](https://r4ds.hadley.nz/joins#how-do-joins-work).
-
-::: columns
-::: {.column width="50%"}
-![](https://r4ds.hadley.nz/diagrams/join/full.png "The  full_join function joins 2 dataframes x and y completely, resulting in a dataframe with all rows and all columns from both dataframes"){width="80%"}
-
-::: {.fragment}
-![](https://r4ds.hadley.nz/diagrams/join/inner.png "The inner_join function joins 2 dataframes x and y and leaves only the rows that overlap between the two dataframes"){width="80%"}
-:::
-:::
-
-::: {.column width="50%"}
-::: {.fragment}
-![](https://r4ds.hadley.nz/diagrams/join/left.png "The left_join function joins 2 dataframes x and y and leaves all rows from dataframe x in the combined dataframe"){width="80%"}
-:::
-
-:::{.fragment}
-![](https://r4ds.hadley.nz/diagrams/join/right.png "The right_join function joins 2 dataframes x and y and leaves all rows from dataframe y in the combined dataframe"){width="80%"}
-:::
-:::
-:::
-
+![source: <https://statisticsglobe.com/r-dplyr-join-inner-left-right-full-semi-anti>](images/dplyr-joins.png)
+Read more about joins in [R for Data Science](https://r4ds.hadley.nz/joins#how-do-joins-work). Today, we'll focus on `full_join()`.
 
 # Go to Exercises 10 and 11
 
