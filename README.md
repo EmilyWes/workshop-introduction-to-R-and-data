@@ -27,11 +27,11 @@ This course requires three things to be installed:
 - The IDE **Rstudio**
 - The packages in **tidyverse**
 
-Information on how to install these (and troubleshoot the installation) is on the [installation guide](https://utrechtuniversity.github.io/workshop-intruduction-to-r-and-data/installation-and-setup.html).
+Information on how to install these (and troubleshoot the installation) is on the [installation guide](https://utrechtuniversity.github.io/workshop-introduction-to-R-and-data/installation-and-setup.html).
 
 ## Course materials
 
-You can best follow the materials using the online book that contains all course materials: https://utrechtuniversity.github.io/workshop-intruduction-to-R-and-data.
+You can best follow the materials using the online book that contains all course materials: https://utrechtuniversity.github.io/workshop-introduction-to-R-and-data.
 
 The following zipped file contains the files you need to follow along: [course-materials.zip](https://github.com/UtrechtUniversity/workshop-introduction-to-R-and-data/raw/main/course-materials.zip).
 You can also see the individual files [here](course-materials).
